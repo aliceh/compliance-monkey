@@ -55,7 +55,7 @@ func main() {
 
 	//oldestMachineIndex := 0
 	oldestMachineAge := float64(0)
-	oldestMachine := machineList.Items[0]
+	var oldestMachine machineapi.Machine
 
 	fmt.Println("Machines that are older than", *maxAgeDays, " days, that are not in Deleting state:\n")
 
@@ -64,7 +64,7 @@ func main() {
 		created := machine.CreationTimestamp
 		age := today.Sub(created.Time).Hours() / 24
 
-		if age > *maxAgeDays && machine.DeletionTimestamp == nil {
+		if age > *maxAgeDays && machine.DeletionTimestamp == nil && machine.Labels["machine.openshift.io/cluster-api-machine-role"] != "master" {
 
 			if age > oldestMachineAge {
 				oldestMachineAge = age
@@ -74,7 +74,7 @@ func main() {
 
 			fmt.Println(machine.Name)
 			fmt.Println(machine.Annotations)
-			fmt.Println(machine.Labels)
+			fmt.Println(machine.Labels, "\n")
 
 		}
 
@@ -89,10 +89,10 @@ func main() {
 
 	}
 
-	if oldestMachine.Labels["machine.openshift.io/cluster-api-machine-role"] == "master" {
+	//if oldestMachine.Labels["machine.openshift.io/cluster-api-machine-role"] == "master" {
 
-		fmt.Println("\n The oldest machine", oldestMachine.Name, "is a master node. Would you like to proceed to delte? Y/N:")
+	//	fmt.Println("\n The oldest machine", oldestMachine.Name, "is a master node. Would you like to proceed to delte? Y/N:")
 
-	}
+	//}
 
 }
